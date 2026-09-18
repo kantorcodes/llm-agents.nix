@@ -13,28 +13,34 @@ jobs:
       - uses: aquaproj/aqua-installer@96a9bc20066c5bf5e275b41019cfc165b25f4e2e # v4.0.5
         with:
           aqua_version: v2.63.0
-          policy_allow: "true"
         env:
           AQUA_GITHUB_TOKEN: ${{ github.token }}
-      - name: Fetch signed registry head
+      - name: Create focused registry config and policy
         run: |
+          git init
           curl -fsSL https://raw.githubusercontent.com/kantorcodes/aqua-registry/292ace1a7c8aa84b396d32ab8231a4acf4371972/registry.yaml -o registry.yaml
           cat > aqua-smoke.yaml <<'EOF'
           ---
           checksum:
             enabled: true
           registries:
-            - name: standard
+            - name: hol-guard-local
               type: local
               path: registry.yaml
           packages:
             - name: hashgraph-online/hol-guard@v3.0.189
+              registry: hol-guard-local
           EOF
-      - name: Allow focused config
-        run: aqua policy allow
-        env:
-          AQUA_CONFIG: ${{ github.workspace }}/aqua-smoke.yaml
-          AQUA_GITHUB_TOKEN: ${{ github.token }}
+          cat > aqua-policy.yaml <<'EOF'
+          ---
+          registries:
+            - name: hol-guard-local
+              type: local
+              path: registry.yaml
+          packages:
+            - registry: hol-guard-local
+          EOF
+          aqua policy allow "$PWD/aqua-policy.yaml"
       - name: Install HOL Guard through Aqua
         run: aqua i
         env:
