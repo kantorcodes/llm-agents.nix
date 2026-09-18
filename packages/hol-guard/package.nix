@@ -1,7 +1,7 @@
 {
   lib,
   python3,
-  fetchurl,
+  fetchPypi,
   versionCheckHook,
   versionCheckHomeHook,
 }:
@@ -11,8 +11,8 @@ python3.pkgs.buildPythonApplication rec {
   version = "3.0.189";
   pyproject = true;
 
-  src = fetchurl {
-    url = "https://pypi.org/packages/source/h/hol-guard/hol_guard-${version}.tar.gz";
+  src = fetchPypi {
+    inherit pname version;
     hash = "sha256-XlKxbWpA6eAfVMENfg6M+pdsLmxT0U13RPh9u+MF8Iw=";
   };
 
