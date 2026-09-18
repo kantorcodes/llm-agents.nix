@@ -27,7 +27,7 @@ jobs:
               asset: hol-guard-core-{{trimV .Version}}-x86_64-unknown-linux-gnu
               format: raw
               github_artifact_attestations:
-                signer_workflow: hashgraph-online/hol-guard/.github/workflows/publish.yml
+                signer_workflow: hashgraph-online/hol-guard/.github/workflows/desktop-core-linux-feed.yml
               supported_envs:
                 - linux/amd64
           EOF
