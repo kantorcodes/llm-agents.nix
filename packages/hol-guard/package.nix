@@ -12,7 +12,8 @@ python3.pkgs.buildPythonApplication rec {
   pyproject = true;
 
   src = fetchPypi {
-    inherit pname version;
+    pname = "hol_guard";
+    inherit version;
     hash = "sha256-XlKxbWpA6eAfVMENfg6M+pdsLmxT0U13RPh9u+MF8Iw=";
   };
 
