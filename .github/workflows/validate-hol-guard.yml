@@ -1,0 +1,19 @@
+name: Validate HOL Guard package
+on:
+  push:
+    branches:
+      - validate/hol-guard-20260918
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
+      - name: Evaluate flake checks
+        run: nix flake check --no-build --show-trace
+      - name: Build HOL Guard
+        run: nix build .#hol-guard -L
+      - name: Verify CLI
+        run: ./result/bin/hol-guard --version
