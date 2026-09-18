@@ -31,3 +31,11 @@ jobs:
           nix run nixpkgs#nix-update -- --flake hol-guard
           grep -F 'version = "3.0.189";' packages/hol-guard/package.nix
           git diff --exit-code HEAD -- packages/hol-guard/package.nix
+      - name: Verify formatting
+        run: |
+          nix fmt
+          git diff --exit-code
+      - name: Verify generated package docs
+        run: |
+          ./scripts/generate-package-docs.nu
+          git diff --exit-code README.md
