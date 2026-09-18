@@ -17,3 +17,17 @@ jobs:
         run: nix build .#hol-guard -L
       - name: Verify CLI
         run: ./result/bin/hol-guard --version
+      - name: Verify nix-update flow
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('packages/hol-guard/package.nix')
+          text = path.read_text()
+          old = 'version = "3.0.189";'
+          if old not in text:
+              raise SystemExit('expected HOL Guard version not found')
+          path.write_text(text.replace(old, 'version = "3.0.188";', 1))
+          PY
+          nix run nixpkgs#nix-update -- --flake hol-guard
+          grep -F 'version = "3.0.189";' packages/hol-guard/package.nix
+          git diff --exit-code HEAD -- packages/hol-guard/package.nix
