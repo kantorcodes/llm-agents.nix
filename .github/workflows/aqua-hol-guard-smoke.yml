@@ -30,6 +30,11 @@ jobs:
           packages:
             - name: hashgraph-online/hol-guard@v3.0.189
           EOF
+      - name: Allow focused config
+        run: aqua policy allow
+        env:
+          AQUA_CONFIG: ${{ github.workspace }}/aqua-smoke.yaml
+          AQUA_GITHUB_TOKEN: ${{ github.token }}
       - name: Install HOL Guard through Aqua
         run: aqua i
         env:
