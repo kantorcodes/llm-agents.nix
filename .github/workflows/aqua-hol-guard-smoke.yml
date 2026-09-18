@@ -1,0 +1,42 @@
+name: Aqua HOL Guard smoke
+on:
+  push:
+    branches:
+      - validation/aqua-hol-guard-exec
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: aquaproj/aqua-installer@96a9bc20066c5bf5e275b41019cfc165b25f4e2e # v4.0.5
+        with:
+          aqua_version: v2.63.0
+          policy_allow: "true"
+        env:
+          AQUA_GITHUB_TOKEN: ${{ github.token }}
+      - name: Fetch signed registry head
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/kantorcodes/aqua-registry/292ace1a7c8aa84b396d32ab8231a4acf4371972/registry.yaml -o registry.yaml
+          cat > aqua-smoke.yaml <<'EOF'
+          ---
+          checksum:
+            enabled: true
+          registries:
+            - name: standard
+              type: local
+              path: registry.yaml
+          packages:
+            - name: hashgraph-online/hol-guard@v3.0.189
+          EOF
+      - name: Install HOL Guard through Aqua
+        run: aqua i
+        env:
+          AQUA_CONFIG: ${{ github.workspace }}/aqua-smoke.yaml
+          AQUA_GITHUB_TOKEN: ${{ github.token }}
+      - name: Execute HOL Guard through Aqua
+        run: aqua exec -- hol-guard --version
+        env:
+          AQUA_CONFIG: ${{ github.workspace }}/aqua-smoke.yaml
+          AQUA_GITHUB_TOKEN: ${{ github.token }}
