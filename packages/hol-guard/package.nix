@@ -59,6 +59,7 @@ python3.pkgs.buildPythonApplication rec {
   meta = {
     description = "Open-source antivirus and runtime protection for AI agents";
     homepage = "https://hol.org/guard";
+    downloadPage = "https://pypi.org/project/hol-guard/";
     changelog = "https://github.com/hashgraph-online/hol-guard/releases";
     license = lib.licenses.asl20;
     sourceProvenance = with lib.sourceTypes; [ fromSource ];
